@@ -1,0 +1,42 @@
+{
+  "machines": {
+    "count": 6
+  },
+  "arms": {
+    "count": 1
+  },
+  "products": {
+    "total": 250,
+    "arrival_interval_s": 4.0,
+    "arrival_jitter": "poisson"
+  },
+  "process": {
+    "machine_process_time_s": 50.0,
+    "machine_load_time_s": 0.0
+  },
+  "arm": {
+    "arm_move_time_s": 3.0,
+    "arm_to_tray_time_s": 3.0
+  },
+  "error": {
+    "error_prob_per_job": 0.01,
+    "error_downtime_s": 300.0
+  },
+  "reachability": "partition",
+  "reachability_matrix": {
+    "A1": [
+      "Tray_00",
+      "Tray_01",
+      "Tray_02",
+      "Tray_03",
+      "Tray_04",
+      "Tray_05"
+    ]
+  },
+  "time": {
+    "mode": "realtime"
+  }
+}
+
+
+
