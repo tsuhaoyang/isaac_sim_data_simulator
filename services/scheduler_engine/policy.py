@@ -79,6 +79,15 @@ class SchedulingPolicy:
         self.intake: deque[str] = deque()
         self.metrics = {"arrivals": 0, "completed": 0, "scrapped": 0}
 
+    def reset(self) -> None:
+        """Clear the world model back to all-empty for a fresh run."""
+        for m in self.machines.values():
+            m.status, m.product = MStatus.FREE, None
+        for a in self.arms.values():
+            a.busy = False
+        self.intake.clear()
+        self.metrics = {"arrivals": 0, "completed": 0, "scrapped": 0}
+
     def handle(self, event) -> list[Decision]:
         if isinstance(event, ProductArrived):
             self.intake.append(event.product_id)

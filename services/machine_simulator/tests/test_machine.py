@@ -42,6 +42,18 @@ def test_error_scraps_product_and_recovers():
     assert states.index("error") < (states.index("done") if "done" in states else 10**9)
 
 
+def test_reset_returns_to_empty():
+    cfg = MachineConfig(process_time_s=2.0, load_time_s=0.0, error_prob_per_job=0.0, autonomous=False)
+    m = Machine("Tray_00", cfg, Random(0), now=0.0, next_product_id=lambda: "P")
+    m.request_load("P1")
+    m.tick(0.1)        # -> start
+    m.tick(0.2)        # -> working
+    assert m.state.value in ("start", "working") and m.product_id == "P1"
+    m.reset(5.0)
+    assert m.state.value == "empty" and m.product_id is None
+    assert m.tick(6.0).transitions == []   # idle (driven, no pending)
+
+
 def test_driven_mode_waits_for_triggers():
     cfg = MachineConfig(process_time_s=1.0, load_time_s=0.0, error_prob_per_job=0.0, autonomous=False)
     rng = Random(0)

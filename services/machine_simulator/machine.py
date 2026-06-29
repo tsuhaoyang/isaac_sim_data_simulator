@@ -51,6 +51,17 @@ class Machine:
         self._pending_load: str | None = None   # driven mode
         self._pending_unload = False            # driven mode
 
+    def reset(self, now: float) -> None:
+        """Back to empty for a fresh run (cancels any in-progress job)."""
+        self.state = MachineState.EMPTY
+        self.product_id = None
+        self._entered = now
+        self._deadline = now + self.cfg.idle_before_load_s
+        self._error_at = None
+        self._last_tele = now
+        self._pending_load = None
+        self._pending_unload = False
+
     # ---- external triggers (driven mode) ----
     def request_load(self, product_id: str) -> None:
         self._pending_load = product_id

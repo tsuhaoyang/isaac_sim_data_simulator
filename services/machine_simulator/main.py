@@ -87,8 +87,15 @@ def main() -> None:
             elif cmd.pick.key in machines:  # picking from a machine = unload (至盤)
                 pending.append((now + arm_unload_s, cmd.pick.key, "unload", None))
 
+    reset_flag = threading.Event()
+
+    def on_control(topic: str, payload) -> None:
+        if isinstance(payload, dict) and payload.get("cmd") == "start":
+            reset_flag.set()  # performed in the tick loop (single-threaded machine state)
+
     if mode == "driven":
         client.subscribe(topics.isaacsim_arm_filter(), on_arm_command)
+    client.subscribe(topics.SIM_CONTROL, on_control)
 
     client.connect()
     # seed retained empty state so collector/scheduler start in sync
@@ -104,6 +111,18 @@ def main() -> None:
 
     while not stop.is_set():
         now = time.monotonic()
+
+        # run reset (sim/control start): clear all machines + queues back to empty
+        if reset_flag.is_set():
+            reset_flag.clear()
+            with pending_lock:
+                pending.clear()
+            _counter["n"] = 0
+            for m in machines.values():
+                m.reset(now)
+                client.publish_json(topics.machine_state(m.id),
+                                    MachineStateEvent(machine_id=m.id, state=MachineState.EMPTY), retain=True)
+            log.info("=== machines reset for new run ===")
 
         # apply due arm-driven triggers
         if pending:

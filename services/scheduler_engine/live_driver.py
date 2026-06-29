@@ -35,10 +35,30 @@ class LiveDriver:
         self._lock = threading.Lock()
         self._task_seq = 0
         self._made = 0
+        self._gen = 0  # run generation: stale timers from a previous run are ignored
 
     def start(self) -> None:
         self.client.subscribe(topics.telemetry_state_filter(), self._on_telemetry)
-        self._schedule_arrival()
+        self._begin_run()
+
+    # --- run control (sim/control) ---
+    def restart(self) -> None:
+        """Reset world + counters and begin a fresh run (no container restart)."""
+        with self._lock:
+            self.policy.reset()
+            self._made = 0
+            self._begin_run()
+            self.log.info("=== run restarted (gen=%d) ===", self._gen)
+
+    def stop(self) -> None:
+        """Stop releasing new products; in-flight work drains."""
+        with self._lock:
+            self._gen += 1
+            self.log.info("=== run stopped (releasing halted) ===")
+
+    def _begin_run(self) -> None:
+        self._gen += 1
+        self._schedule_arrival(self._gen)
 
     # --- inbound events ---
     def _on_telemetry(self, topic: str, payload) -> None:
@@ -48,22 +68,26 @@ class LiveDriver:
             return
         self._process(MachineObserved(ev.machine_id, ev.state.value, ev.product_id))
 
-    def _arrive(self) -> None:
+    def _arrive(self, gen: int) -> None:
+        if gen != self._gen:
+            return  # stale arrival from a previous run
         self._made += 1
         self._process(ProductArrived(f"P{self._made:06d}"))
-        self._schedule_arrival()
+        self._schedule_arrival(gen)
 
-    def _on_arm_free(self, arm_id: str) -> None:
+    def _on_arm_free(self, arm_id: str, gen: int) -> None:
+        if gen != self._gen:
+            return  # stale arm-free timer from a previous run
         self._process(ArmFreed(arm_id))
 
     # --- scheduling ---
-    def _schedule_arrival(self) -> None:
+    def _schedule_arrival(self, gen: int) -> None:
         if self.total_products and self._made >= self.total_products:
             self.log.info("all %d products released", self.total_products)
             return
         delay = (self.rng.expovariate(1.0 / self.arrival_interval_s)
                  if self.jitter == "poisson" else self.arrival_interval_s)
-        self.clock.call_later(delay, self._arrive)
+        self.clock.call_later(delay, lambda g=gen: self._arrive(g))
 
     def _process(self, event) -> None:
         with self._lock:
@@ -81,4 +105,5 @@ class LiveDriver:
                       cmd.task_id, d.arm_id, d.kind, d.frm, d.to, d.product_id)
         # open-loop: arm is busy for the nominal move time, then free
         move_s = self.arm_load_s if d.kind == "load" else self.arm_unload_s
-        self.clock.call_later(move_s, lambda a=d.arm_id: self._on_arm_free(a))
+        gen = self._gen
+        self.clock.call_later(move_s, lambda a=d.arm_id, g=gen: self._on_arm_free(a, g))

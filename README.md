@@ -95,6 +95,7 @@ isaacsim/machine/state        # 一包含 Tray_00~Tray_05
 | `telemetry/machine/{id}/state` | data_collector → scheduler_engine | 是 |
 | `scheduler/command` | scheduler_engine → mqtt_publisher | 否 |
 | `scheduler/metrics` | scheduler_engine → (dashboard/log) | 否 |
+| `sim/control` | 使用者/MQTTX → 全服務（`{"cmd":"start"\|"stop"}` 重跑/停止，不需重啟） | 否 |
 
 真機台 socket 介面見 [docs/integration_real_machines.md](docs/integration_real_machines.md)；完整契約見 [docs/SPEC.md §6](docs/SPEC.md)。
 

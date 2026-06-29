@@ -1,5 +1,8 @@
 """MQTT topic builders. Single source of truth for topic strings (SPEC §6.1)."""
 
+# --- run control (re-run without restarting containers) ---
+SIM_CONTROL = "sim/control"   # payload: {"cmd": "start"|"stop"}
+
 # --- health / heartbeat (M0 connectivity) ---
 def health_heartbeat(service: str) -> str:
     return f"health/{service}/heartbeat"

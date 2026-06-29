@@ -78,6 +78,19 @@ def test_full_cycle_completes():
     assert p.metrics["completed"] == 1
 
 
+def test_reset_clears_world():
+    p = _policy()
+    p.handle(ProductArrived("P1"))      # load -> machine busy, arm busy
+    p.intake.append("P2")               # something queued
+    p.reset()
+    assert all(m.status == MStatus.FREE and m.product is None for m in p.machines.values())
+    assert all(not a.busy for a in p.arms.values())
+    assert len(p.intake) == 0
+    assert p.metrics == {"arrivals": 0, "completed": 0, "scrapped": 0}
+    # after reset a new arrival schedules cleanly again
+    assert p.handle(ProductArrived("P9"))[0].kind == "load"
+
+
 def test_build_world_partitions_machines():
     arms, machines = build_world({"machines": {"count": 6}, "arms": {"count": 2}})
     assert len(machines) == 6

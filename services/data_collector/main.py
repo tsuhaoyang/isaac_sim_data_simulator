@@ -73,9 +73,17 @@ def main() -> None:
                 detail={"task_id": cmd.task_id},
             ))
 
+    def on_control(topic: str, payload) -> None:
+        cmd = payload.get("cmd") if isinstance(payload, dict) else None
+        if cmd:
+            with ingest_lock:
+                collector.log_event(EventRecord(entity_type="run", entity_id="-", event=cmd))
+            log.info("=== run marker: %s ===", cmd)
+
     client.subscribe(topics.plant_state_filter(), on_machine_state)
     client.subscribe("plant/machine/+/telemetry", on_machine_telemetry)
     client.subscribe(topics.SCHEDULER_COMMAND, on_arm_command)  # ArmCommand (from/to) — §7.2
+    client.subscribe(topics.SIM_CONTROL, on_control)
     client.connect()
     log.info("data_collector up: storage=%s -> %s", settings.storage_backend, store_path)
 

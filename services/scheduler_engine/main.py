@@ -39,6 +39,16 @@ def main() -> None:
         rng=rng, log=log,
     )
 
+    def on_control(topic: str, payload) -> None:
+        cmd = payload.get("cmd") if isinstance(payload, dict) else None
+        if cmd == "start":
+            driver.restart()
+        elif cmd == "stop":
+            driver.stop()
+        else:
+            log.warning("unknown control cmd: %s", payload)
+
+    client.subscribe(topics.SIM_CONTROL, on_control)
     client.connect()
     driver.start()
     log.info("scheduler up: %d arms, %d machines, %d products @ %.1fs",

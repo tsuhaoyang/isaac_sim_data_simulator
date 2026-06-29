@@ -57,7 +57,30 @@ print('by to_state:', dict(c.execute('select to_state,count(*) from event_log gr
 
 事件檔同時存在本機 `./data/events.db`。
 
-## 5. 調參數重跑
+## 5. 重跑模擬（不需重啟 container）
+
+一輪 = 把 `products.total` 個產品放完。跑完後**不必重啟容器**，發一則控制訊息到 `sim/control` 即可重置並重跑。
+
+操作（二選一）：
+
+```bash
+# 方式 A：指令列
+docker compose exec broker mosquitto_pub -t sim/control -m '{"cmd":"start"}'
+```
+
+方式 B：在 **MQTTX** 對 topic `sim/control` 發布 payload `{"cmd":"start"}`。
+
+| 指令 | 效果 |
+|---|---|
+| `{"cmd":"start"}` | 重置所有機台→empty、清空進料佇列與指標，產品從 `P000001` 重新進線。**隨時可發**（跑到一半也能重來）。 |
+| `{"cmd":"stop"}` | 停止放新料；在製品做完後系統閒置。 |
+
+發出後在 `docker compose logs -f scheduler_engine` 會看到 `=== run restarted ===`，且 load 指令的 product 重新從 `P000001` 開始；Isaac 端（`isaacsim/#`）也會看到機台全部回 `empty` 後重新動起來。
+
+> 只是想**再跑一輪** → 用 `start`（秒級、不重啟）。
+> 想**換參數** → 見步驟 6（需重讀 config）。
+
+## 6. 調參數後重跑
 
 編輯 [config/simulation.json](config/simulation.json)（機台數、手臂數、產品數、進線間隔、作業時間、故障率…）。`config/` 已掛載為 volume，改完只要 restart、**不用 rebuild**：
 
@@ -65,7 +88,9 @@ print('by to_state:', dict(c.execute('select to_state,count(*) from event_log gr
 docker compose restart
 ```
 
-## 6. 容量試算（不必起全棧）
+restart 後即以新參數開跑；之後仍可用步驟 5 的 `start` 反覆重跑。
+
+## 7. 容量試算（不必起全棧）
 
 依設定算「需要幾台機台、幾隻手臂」，並用模擬驗證：
 
@@ -75,7 +100,7 @@ docker compose run --rm scheduler_engine python capacity.py --config /app/config
 
 輸出包含解析公式估值 + 模擬驗證的 mean wait / 利用率 / 建議配置。
 
-## 7. 關閉
+## 8. 關閉
 
 ```bash
 docker compose down
@@ -117,5 +142,6 @@ python mqtt_arm_bridge.py --selftest --host localhost --port 1883
 | 服務一直重啟 | `docker compose logs <service>` 看錯誤；多半是 `config/*.json` 格式問題 |
 | 沒看到手臂指令 | 確認 `scheduler_engine` 有在發（步驟 2）、`machine_simulator` 為 `driven` 模式（compose 預設） |
 | 改了 config 沒生效 | `config/` 已掛載 volume，改完 `docker compose restart` 即可（首次加掛載需先 `up -d` 重建一次） |
+| 一輪跑完沒動靜 | 正常，產品放完即停。發 `sim/control` `{"cmd":"start"}` 重跑（步驟 5），不必重啟 |
 | 跑測試報 Python 版本錯 | 用容器跑測試（見 README「測試」段） |
 | port 1883/9000 被占用 | 改 `docker-compose.yml` 的 `ports` 對應，或停掉占用程式 |

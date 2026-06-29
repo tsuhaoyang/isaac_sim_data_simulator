@@ -195,6 +195,7 @@ A = uptime / (uptime + downtime)，downtime 由 error_downtime 與故障頻率�
 | `telemetry/machine/{id}/state` | 內部 | data_collector | scheduler_engine | 是 |
 | `scheduler/command` | 內部 | scheduler_engine | mqtt_publisher | 否 |
 | `scheduler/metrics` | 內部 | scheduler_engine | (dashboard/log) | 否 |
+| `sim/control` | 控制 | 使用者 / MQTTX | scheduler_engine, machine_simulator, data_collector | 否 |
 | `isaacsim/arm/{arm_id}/command` | 下行 | mqtt_publisher | **Isaac Sim** | 否 |
 | `isaacsim/machine/state` | 下行 | mqtt_publisher | **Isaac Sim** | 是 |
 
