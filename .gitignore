@@ -11,3 +11,4 @@ venv/
 *.jsonl
 .DS_Store
 .env
+.claude

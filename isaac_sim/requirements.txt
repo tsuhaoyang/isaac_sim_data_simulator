@@ -1,0 +1,3 @@
+# Install into Isaac Sim's bundled Python, e.g. from the Isaac Sim install dir:
+#   ./python.sh -m pip install paho-mqtt
+paho-mqtt>=2.0

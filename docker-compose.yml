@@ -1,0 +1,70 @@
+name: isaac-sim-simulator
+
+services:
+  broker:
+    image: eclipse-mosquitto:2
+    container_name: isaac-broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./broker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    restart: unless-stopped
+
+  machine_simulator:
+    build:
+      context: .
+      dockerfile: services/machine_simulator/Dockerfile
+    env_file: .env
+    environment:
+      SERVICE_NAME: machine_simulator
+      MACHINE_MODE: driven       # driven (M2 arm commands) | autonomous (M1 self-cycle)
+      # SIM_SEED: "42"           # uncomment for reproducible faults
+    volumes:
+      - ./config:/app/config:ro   # edit config/*.json then `docker compose restart` (no rebuild)
+    depends_on:
+      - broker
+    restart: unless-stopped
+
+  data_collector:
+    build:
+      context: .
+      dockerfile: services/data_collector/Dockerfile
+    env_file: .env
+    environment:
+      SERVICE_NAME: data_collector
+      SOCKET_ENABLED: "true"      # TCP gateway for real machines (M4)
+      SOCKET_PORT: "9000"
+    ports:
+      - "9000:9000"               # real machines connect here (newline-delimited JSON)
+    volumes:
+      - ./config:/app/config:ro   # edit config/*.json then `docker compose restart` (no rebuild)
+      - ./data:/app/data          # event log (sqlite/jsonl) persists & is inspectable
+    depends_on:
+      - broker
+    restart: unless-stopped
+
+  scheduler_engine:
+    build:
+      context: .
+      dockerfile: services/scheduler_engine/Dockerfile
+    env_file: .env
+    environment:
+      SERVICE_NAME: scheduler_engine
+    volumes:
+      - ./config:/app/config:ro   # edit config/*.json then `docker compose restart` (no rebuild)
+    depends_on:
+      - broker
+    restart: unless-stopped
+
+  mqtt_publisher:
+    build:
+      context: .
+      dockerfile: services/mqtt_publisher/Dockerfile
+    env_file: .env
+    environment:
+      SERVICE_NAME: mqtt_publisher
+    volumes:
+      - ./config:/app/config:ro   # edit config/*.json then `docker compose restart` (no rebuild)
+    depends_on:
+      - broker
+    restart: unless-stopped
