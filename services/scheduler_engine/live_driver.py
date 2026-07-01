@@ -20,13 +20,12 @@ from policy import ArmFreed, MachineObserved, ProductArrived, SchedulingPolicy
 
 class LiveDriver:
     def __init__(self, policy: SchedulingPolicy, client: MqttClient, clock: Clock, *,
-                 arm_load_s: float, arm_unload_s: float, arrival_interval_s: float, jitter: str,
+                 arm_times, arrival_interval_s: float, jitter: str,
                  total_products: int, rng: Random, log):
         self.policy = policy
         self.client = client
         self.clock = clock
-        self.arm_load_s = arm_load_s      # ProductIn -> machine
-        self.arm_unload_s = arm_unload_s  # machine -> ProductOut (至盤)
+        self.arm_times = arm_times        # ArmTimes: per-machine load()/unload()
         self.arrival_interval_s = arrival_interval_s
         self.jitter = jitter
         self.total_products = total_products
@@ -103,7 +102,7 @@ class LiveDriver:
         self.client.publish_json(topics.SCHEDULER_COMMAND, cmd)
         self.log.info("%s %s: %s %s->%s product=%s",
                       cmd.task_id, d.arm_id, d.kind, d.frm, d.to, d.product_id)
-        # open-loop: arm is busy for the nominal move time, then free
-        move_s = self.arm_load_s if d.kind == "load" else self.arm_unload_s
+        # open-loop: arm is busy for the nominal move time (per machine), then free
+        move_s = self.arm_times.load(d.machine_id) if d.kind == "load" else self.arm_times.unload(d.machine_id)
         gen = self._gen
         self.clock.call_later(move_s, lambda a=d.arm_id, g=gen: self._on_arm_free(a, g))

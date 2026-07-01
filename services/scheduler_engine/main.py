@@ -6,6 +6,7 @@ import threading
 from random import Random
 
 from isaac_common import topics
+from isaac_common.arm_timing import ArmTimes
 from isaac_common.clock import RealClock
 from isaac_common.config import load_json
 from isaac_common.logging import get_logger
@@ -24,15 +25,15 @@ def main() -> None:
     cfg = load_json(settings.config_path)
 
     arms, machines = build_world(cfg)
-    policy = SchedulingPolicy(arms, machines)
+    arm_times = ArmTimes(cfg)
+    policy = SchedulingPolicy(arms, machines, load_time=arm_times.load)  # prefer fastest free machine
     seed_env = os.getenv("SIM_SEED")
     rng = Random(int(seed_env)) if seed_env else Random()
 
     client = MqttClient(settings.mqtt_host, settings.mqtt_port, SERVICE, log)
     driver = LiveDriver(
         policy, client, RealClock(),
-        arm_load_s=float(cfg["arm"]["arm_move_time_s"]),
-        arm_unload_s=float(cfg["arm"].get("arm_to_tray_time_s", cfg["arm"]["arm_move_time_s"])),
+        arm_times=arm_times,
         arrival_interval_s=float(cfg["products"]["arrival_interval_s"]),
         jitter=str(cfg["products"].get("arrival_jitter", "fixed")),
         total_products=int(cfg["products"]["total"]),

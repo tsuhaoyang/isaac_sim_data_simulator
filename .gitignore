@@ -9,6 +9,8 @@ venv/
 *.sqlite
 *.sqlite3
 *.jsonl
+*.db
+data/
 .DS_Store
 .env
 .claude

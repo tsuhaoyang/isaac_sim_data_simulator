@@ -29,6 +29,17 @@ def test_arrival_triggers_load_and_reserves():
     assert list(p.intake) == ["P2"]
 
 
+def test_load_prefers_fastest_free_machine():
+    arms = {"A1": ArmW("A1", ["M01", "M02", "M03"])}
+    machines = {m: MachineW(m) for m in ["M01", "M02", "M03"]}
+    load_s = {"M01": 5.0, "M02": 2.0, "M03": 4.0}
+    p = SchedulingPolicy(arms, machines, load_time=lambda mid: load_s[mid])
+    assert p.handle(ProductArrived("P1"))[0].machine_id == "M02"   # fastest first
+    p.handle(ProductArrived("P2"))                # queued (arm busy)
+    d2 = p.handle(ArmFreed("A1"))[0]               # arm free -> next fastest free machine
+    assert d2.machine_id == "M03"                  # M03 (4.0) beats M01 (5.0)
+
+
 def test_fifo_order_across_arm_frees():
     p = _policy()
     first = p.handle(ProductArrived("P1"))[0]

@@ -12,7 +12,8 @@ import time
 from random import Random
 
 from isaac_common import topics
-from isaac_common.config import load_json
+from isaac_common.arm_timing import ArmTimes
+from isaac_common.config import load_json, machine_ids as machine_ids_from_cfg
 from isaac_common.logging import get_logger
 from isaac_common.mqtt_client import MqttClient
 from isaac_common.schemas import IsaacSimCommand, MachineState, MachineStateEvent
@@ -23,25 +24,15 @@ from machine import Machine, MachineConfig
 SERVICE = "machine_simulator"
 
 
-def _machine_ids(cfg: dict) -> list[str]:
-    """Machine names from config — same source as the scheduler's world model.
-    Uses reachability_matrix values if present, else M01..M{count}."""
-    matrix = cfg.get("reachability_matrix")
-    if matrix:
-        return sorted({m for ms in matrix.values() for m in ms})
-    return [f"M{i:02d}" for i in range(1, int(cfg["machines"]["count"]) + 1)]
-
-
 def main() -> None:
     settings = Settings.from_env(SERVICE)
     log = get_logger(SERVICE)
     cfg = load_json(settings.config_path)
 
-    machine_ids = _machine_ids(cfg)
+    machine_ids = machine_ids_from_cfg(cfg)
+    arm_times = ArmTimes(cfg)               # per-machine load/unload delays
     mode = os.getenv("MACHINE_MODE", "autonomous").lower()
     tick_s = float(os.getenv("TICK_INTERVAL_S", "0.25"))
-    arm_load_s = float(cfg.get("arm", {}).get("arm_move_time_s", 3.0))      # ProductIn -> machine
-    arm_unload_s = float(cfg.get("arm", {}).get("arm_to_tray_time_s", arm_load_s))  # machine -> tray
     seed_env = os.getenv("SIM_SEED")
     rng = Random(int(seed_env)) if seed_env else Random()
 
@@ -83,9 +74,9 @@ def main() -> None:
         now = time.monotonic()
         with pending_lock:
             if cmd.place.key in machines:  # placing onto a machine = load
-                pending.append((now + arm_load_s, cmd.place.key, "load", cmd.product_id))
+                pending.append((now + arm_times.load(cmd.place.key), cmd.place.key, "load", cmd.product_id))
             elif cmd.pick.key in machines:  # picking from a machine = unload (至盤)
-                pending.append((now + arm_unload_s, cmd.pick.key, "unload", None))
+                pending.append((now + arm_times.unload(cmd.pick.key), cmd.pick.key, "unload", None))
 
     reset_flag = threading.Event()
 

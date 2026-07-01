@@ -16,7 +16,8 @@ import argparse
 import math
 from statistics import mean
 
-from isaac_common.config import load_json
+from isaac_common.arm_timing import ArmTimes
+from isaac_common.config import load_json, machine_ids
 
 from sim_driver import SimReport, run_one
 
@@ -25,8 +26,8 @@ def analytical(cfg: dict) -> dict:
     interval = float(cfg["products"]["arrival_interval_s"])
     lam = 1.0 / interval
     t_proc = float(cfg["process"]["machine_process_time_s"])
-    t_load = float(cfg["arm"]["arm_move_time_s"])
-    t_unload = float(cfg["arm"].get("arm_to_tray_time_s", t_load))
+    # capacity decides HOW MANY machines, so use the mean per-machine arm time
+    t_load, t_unload = ArmTimes(cfg).averages(machine_ids(cfg))
     p = float(cfg["error"]["error_prob_per_job"])
     d = float(cfg["error"]["error_downtime_s"])
 
@@ -41,9 +42,10 @@ def analytical(cfg: dict) -> dict:
 
 
 def _proc_params(cfg: dict) -> dict:
+    avg_load, avg_unload = ArmTimes(cfg).averages(machine_ids(cfg))  # representative for capacity
     return dict(
-        arm_load_s=float(cfg["arm"]["arm_move_time_s"]),
-        arm_unload_s=float(cfg["arm"].get("arm_to_tray_time_s", cfg["arm"]["arm_move_time_s"])),
+        arm_load_s=avg_load,
+        arm_unload_s=avg_unload,
         process_time_s=float(cfg["process"]["machine_process_time_s"]),
         load_time_s=float(cfg["process"].get("machine_load_time_s", 0.0)),
         error_prob=float(cfg["error"]["error_prob_per_job"]),

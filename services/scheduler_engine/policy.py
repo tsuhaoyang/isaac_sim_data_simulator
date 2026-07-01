@@ -73,9 +73,12 @@ class Decision:
 
 
 class SchedulingPolicy:
-    def __init__(self, arms: dict[str, ArmW], machines: dict[str, MachineW]):
+    def __init__(self, arms: dict[str, ArmW], machines: dict[str, MachineW], load_time=None):
         self.arms = arms
         self.machines = machines
+        # load_time(machine_id) -> seconds; when set, load picks the FASTEST free
+        # reachable machine (shortest arm move), else the first free one.
+        self._load_time = load_time
         self.intake: deque[str] = deque()
         self.metrics = {"arrivals": 0, "completed": 0, "scrapped": 0}
 
@@ -138,11 +141,12 @@ class SchedulingPolicy:
 
             # priority 2: load the FIFO-head product onto a free reachable machine
             if self.intake:
-                free_m = next(
-                    (self.machines[mid] for mid in arm.reachable
-                     if self.machines[mid].status == MStatus.FREE),
-                    None,
-                )
+                free = [self.machines[mid] for mid in arm.reachable
+                        if self.machines[mid].status == MStatus.FREE]
+                if self._load_time is not None:
+                    free_m = min(free, key=lambda m: self._load_time(m.id)) if free else None
+                else:
+                    free_m = free[0] if free else None
                 if free_m is not None:
                     pid = self.intake.popleft()
                     decisions.append(Decision("load", aid, free_m.id, pid, PRODUCT_IN, free_m.id))
