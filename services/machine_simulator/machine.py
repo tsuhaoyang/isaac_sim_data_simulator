@@ -3,8 +3,10 @@
 Transport-agnostic and deterministic: `tick(now)` is driven by an injected clock
 value and an injected RNG, so it is unit-testable without MQTT or wall time.
 
-State flow:  empty -> start -> working -> done -> empty
+State flow:  empty -> check_in -> working -> check_out -> done -> empty
              working --hazard--> error --downtime--> empty   (在製品報廢)
+  check_in  = Tray 收合 (tray_check_in_time_s)
+  check_out = Tray 吐出 (tray_check_out_time_s)
 
 Two drive modes:
 - autonomous: machine self-loads synthetic products when empty (M1 fake-data / a.1).
@@ -20,7 +22,8 @@ from isaac_common.schemas import MachineState, MachineStateEvent
 @dataclass
 class MachineConfig:
     process_time_s: float
-    load_time_s: float = 0.0
+    check_in_time_s: float = 0.0      # Tray 收合
+    check_out_time_s: float = 0.0     # Tray 吐出
     error_prob_per_job: float = 0.0
     error_downtime_s: float = 30.0
     telemetry_interval_s: float = 1.0
@@ -88,8 +91,8 @@ class Machine:
 
     def _begin_job(self, product_id: str, now: float, out: TickOutput) -> None:
         self.product_id = product_id
-        out.transitions.append(self._enter(MachineState.START, now))
-        self._deadline = now + self.cfg.load_time_s
+        out.transitions.append(self._enter(MachineState.CHECK_IN, now))  # Tray 收合
+        self._deadline = now + self.cfg.check_in_time_s
 
     def _begin_working(self, now: float, out: TickOutput) -> None:
         self._deadline = now + self.cfg.process_time_s
@@ -112,7 +115,7 @@ class Machine:
             elif self.cfg.autonomous and now >= self._deadline:
                 self._begin_job(self._next_product_id(), now, out)
 
-        elif st == MachineState.START:
+        elif st == MachineState.CHECK_IN:                       # Tray 收合完成 -> 開始加工
             if now >= self._deadline:
                 self._begin_working(now, out)
 
@@ -123,12 +126,17 @@ class Machine:
                 self._error_at = None
                 self._deadline = now + self.cfg.error_downtime_s
             elif now >= self._deadline:
-                out.transitions.append(self._enter(MachineState.DONE, now))
-                if self.cfg.autonomous:
-                    self._deadline = now + self.cfg.done_hold_s
+                out.transitions.append(self._enter(MachineState.CHECK_OUT, now))  # Tray 吐出
+                self._deadline = now + self.cfg.check_out_time_s
             elif now - self._last_tele >= self.cfg.telemetry_interval_s:
                 self._last_tele = now
                 out.telemetry = self._event(now)
+
+        elif st == MachineState.CHECK_OUT:                      # Tray 吐出完成 -> 待取料
+            if now >= self._deadline:
+                out.transitions.append(self._enter(MachineState.DONE, now))
+                if self.cfg.autonomous:
+                    self._deadline = now + self.cfg.done_hold_s
 
         elif st == MachineState.DONE:
             if self._pending_unload or (self.cfg.autonomous and now >= self._deadline):

@@ -31,7 +31,10 @@ def analytical(cfg: dict) -> dict:
     p = float(cfg["error"]["error_prob_per_job"])
     d = float(cfg["error"]["error_downtime_s"])
 
-    t_machine = (1 - p) * t_proc + p * (t_proc / 2) + p * d
+    cin = float(cfg["process"].get("tray_check_in_time_s", 0.0))
+    cout = float(cfg["process"].get("tray_check_out_time_s", 0.0))
+    # machine busy per arrival: good job = check_in + proc + check_out; fault = check_in + half proc + downtime
+    t_machine = (1 - p) * (cin + t_proc + cout) + p * (cin + t_proc / 2 + d)
     t_arm = t_load + (1 - p) * t_unload
     return {
         "lambda": lam, "t_machine_per_arrival": t_machine, "t_arm_per_arrival": t_arm,
@@ -47,7 +50,8 @@ def _proc_params(cfg: dict) -> dict:
         arm_load_s=avg_load,
         arm_unload_s=avg_unload,
         process_time_s=float(cfg["process"]["machine_process_time_s"]),
-        load_time_s=float(cfg["process"].get("machine_load_time_s", 0.0)),
+        check_in_time_s=float(cfg["process"].get("tray_check_in_time_s", 0.0)),
+        check_out_time_s=float(cfg["process"].get("tray_check_out_time_s", 0.0)),
         error_prob=float(cfg["error"]["error_prob_per_job"]),
         error_downtime_s=float(cfg["error"]["error_downtime_s"]),
         arrival_interval_s=float(cfg["products"]["arrival_interval_s"]),

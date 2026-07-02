@@ -38,7 +38,8 @@ def main() -> None:
 
     mcfg = MachineConfig(
         process_time_s=float(cfg["process"]["machine_process_time_s"]),
-        load_time_s=float(cfg["process"].get("machine_load_time_s", 0.0)),
+        check_in_time_s=float(cfg["process"].get("tray_check_in_time_s", 0.0)),
+        check_out_time_s=float(cfg["process"].get("tray_check_out_time_s", 0.0)),
         error_prob_per_job=float(cfg["error"]["error_prob_per_job"]),
         error_downtime_s=float(cfg["error"]["error_downtime_s"]),
         telemetry_interval_s=float(os.getenv("TELEMETRY_INTERVAL_S", "1.0")),

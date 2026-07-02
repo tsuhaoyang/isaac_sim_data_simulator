@@ -20,7 +20,7 @@
 - **Policy / Driver / Clock 分層**：`SchedulingPolicy` 純邏輯無 I/O；`LiveDriver`(RealClock+MQTT) 跑 demo、`SimDriver`(VirtualClock+內嵌模型) 跑容量驗證，**共用同一份 policy**。RNG 可注入種子。
 
 ## 機台狀態機（不可偏離）
-`empty → start → working → done → empty`；`working --hazard--> error --downtime--> empty`（台上產品報廢、不續做、不重投）。
+`empty → check_in(Tray收合) → working → check_out(Tray吐出) → done → empty`；`working --hazard--> error --downtime--> empty`（台上產品報廢、不續做、不重投）。
 
 ## 狀態紀錄表（SPEC §7）
 - **即時狀態總表**：MQTT retained 訊息 + collector 記憶體快照。

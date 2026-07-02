@@ -33,7 +33,7 @@
 }
 ```
 
-- 顯示顏色/燈號用 `state`（`empty`/`start`/`working`/`done`/`error`）；進度條用 `elapsed_s` / `remaining_s`。
+- 顯示顏色/燈號用 `state`（`empty`/`check_in`/`working`/`check_out`/`done`/`error`）；進度條用 `elapsed_s` / `remaining_s`。
 - `error` = 故障停機（台上產品報廢），一段時間後變回 `empty`。
 - 每次任一機台更新都重發整包；Isaac 端直接以整包覆蓋自己的狀態表即可。
 

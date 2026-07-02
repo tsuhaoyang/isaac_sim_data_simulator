@@ -12,7 +12,8 @@
   },
   "process": {
     "machine_process_time_s": 50.0,
-    "machine_load_time_s": 0.0
+    "tray_check_in_time_s": 2.0,
+    "tray_check_out_time_s": 2.0
   },
   "arm": {
     "arm_move_time_s": 5.0,

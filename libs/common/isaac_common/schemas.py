@@ -20,8 +20,9 @@ class Heartbeat(BaseModel):
 # --- machine state (SPEC §4 / §6.2) ---
 class MachineState(str, Enum):
     EMPTY = "empty"
-    START = "start"
+    CHECK_IN = "check_in"      # Tray 收合（產品放上後、加工前）
     WORKING = "working"
+    CHECK_OUT = "check_out"    # Tray 吐出（加工後、可取料前）
     DONE = "done"
     ERROR = "error"
 

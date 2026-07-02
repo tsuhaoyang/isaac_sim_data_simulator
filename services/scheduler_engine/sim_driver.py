@@ -34,7 +34,8 @@ class SimReport:
 
 class SimDriver:
     def __init__(self, policy: SchedulingPolicy, clock: VirtualClock, *,
-                 arm_load_s: float, arm_unload_s: float, process_time_s: float, load_time_s: float,
+                 arm_load_s: float, arm_unload_s: float, process_time_s: float,
+                 check_in_time_s: float = 0.0, check_out_time_s: float = 0.0,
                  error_prob: float, error_downtime_s: float,
                  arrival_interval_s: float, jitter: str, total: int, rng: Random):
         self.policy = policy
@@ -42,7 +43,8 @@ class SimDriver:
         self.arm_load_s = arm_load_s        # ProductIn -> machine
         self.arm_unload_s = arm_unload_s    # machine -> ProductOut (至盤)
         self.process_time_s = process_time_s
-        self.load_time_s = load_time_s
+        self.check_in_time_s = check_in_time_s     # Tray 收合
+        self.check_out_time_s = check_out_time_s   # Tray 吐出
         self.error_prob = error_prob
         self.error_downtime_s = error_downtime_s
         self.arrival_interval_s = arrival_interval_s
@@ -86,15 +88,18 @@ class SimDriver:
         self.clock.call_later(move_s, lambda a=d.arm_id: self._process(ArmFreed(a)))
         if d.kind == "load":
             self._waits.append(self.clock.now() - self._arrival_at.get(d.product_id, self.clock.now()))
-            base = self.arm_load_s + self.load_time_s
+            # arm places product, then Tray 收合 (check_in), then working starts
+            work_start = self.arm_load_s + self.check_in_time_s
             if self.rng.random() < self.error_prob:
-                err_at = base + self.rng.uniform(0.0, self.process_time_s)
+                err_at = work_start + self.rng.uniform(0.0, self.process_time_s)
                 self.clock.call_later(err_at, lambda m=d.machine_id, p=d.product_id:
                                       self._process(MachineObserved(m, "error", p)))
                 self.clock.call_later(err_at + self.error_downtime_s, lambda m=d.machine_id:
                                       self._process(MachineObserved(m, "empty")))
             else:
-                self.clock.call_later(base + self.process_time_s, lambda m=d.machine_id, p=d.product_id:
+                # working -> Tray 吐出 (check_out) -> done
+                done_at = work_start + self.process_time_s + self.check_out_time_s
+                self.clock.call_later(done_at, lambda m=d.machine_id, p=d.product_id:
                                       self._process(MachineObserved(m, "done", p)))
         else:  # unload
             self.clock.call_later(self.arm_unload_s, lambda m=d.machine_id:
@@ -110,7 +115,8 @@ class SimDriver:
         mean_wait = sum(waits) / len(waits) if waits else 0.0
         p95 = waits[min(len(waits) - 1, int(0.95 * len(waits)))] if waits else 0.0
         span = makespan or 1.0
-        machine_busy = completed * self.process_time_s + scrapped * (self.process_time_s / 2 + self.error_downtime_s)
+        cycle = self.check_in_time_s + self.process_time_s + self.check_out_time_s  # machine busy per good job
+        machine_busy = completed * cycle + scrapped * (self.check_in_time_s + self.process_time_s / 2 + self.error_downtime_s)
         # every product gets 1 load; only completed ones also get an unload (scrap auto-empties)
         arm_busy = (completed + scrapped) * self.arm_load_s + completed * self.arm_unload_s
         return SimReport(

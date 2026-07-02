@@ -22,12 +22,12 @@ def test_ingest_tracks_transition_and_snapshot():
     c = Collector(sink)
 
     r1 = c.ingest_machine_state(_state("M01", MachineState.EMPTY))
-    r2 = c.ingest_machine_state(_state("M01", MachineState.START, "P1"))
+    r2 = c.ingest_machine_state(_state("M01", MachineState.CHECK_IN, "P1"))
     r3 = c.ingest_machine_state(_state("M01", MachineState.WORKING, "P1"))
 
     assert r1.from_state is None and r1.to_state == "empty"
-    assert r2.from_state == "empty" and r2.to_state == "start"
-    assert r3.from_state == "start" and r3.to_state == "working"
+    assert r2.from_state == "empty" and r2.to_state == "check_in"
+    assert r3.from_state == "check_in" and r3.to_state == "working"
     assert [r.seq for r in sink.records] == [1, 2, 3]
     assert c.snapshot["M01"].state == MachineState.WORKING
 

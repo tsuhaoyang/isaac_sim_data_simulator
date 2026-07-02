@@ -10,7 +10,7 @@
 
 | Topic | 用途 | retained |
 |---|---|---|
-| `plant/machine/{machine_id}/state` | 狀態轉移（empty/start/working/done/error） | 是 |
+| `plant/machine/{machine_id}/state` | 狀態轉移（empty/check_in/working/check_out/done/error） | 是 |
 | `plant/machine/{machine_id}/telemetry` | 加工中即時取樣（elapsed/remaining） | 否 |
 
 payload 為 JSON（見下方 schema）。這與 `machine_simulator` 發的完全相同，零差異。
@@ -25,7 +25,7 @@ payload 為 JSON（見下方 schema）。這與 `machine_simulator` 發的完全
 
 範例（`\n` 為換行）：
 ```
-{"machine_id":"Tray_00","state":"start","product_id":"P000001"}\n
+{"machine_id":"Tray_00","state":"check_in","product_id":"P000001"}\n
 {"machine_id":"Tray_00","state":"working","product_id":"P000001","elapsed_s":3.0,"remaining_s":17.0}\n
 {"machine_id":"Tray_00","state":"done","product_id":"P000001"}\n
 ```
@@ -42,7 +42,7 @@ printf '{"machine_id":"Tray_00","state":"done","product_id":"P9"}\n' | nc localh
 | 欄位 | 型別 | 必填 | 說明 |
 |---|---|---|---|
 | `machine_id` | str | 是 | 機台代號，需對齊 config，例 `Tray_00` |
-| `state` | str | 是 | `empty` / `start` / `working` / `done` / `error` |
+| `state` | str | 是 | `empty` / `check_in` / `working` / `check_out` / `done` / `error` |
 | `product_id` | str \| null | 否 | 台上產品；error 時為被報廢的產品 |
 | `elapsed_s` | float | 否 | 本狀態已歷時 |
 | `remaining_s` | float | 否 | working 距完成剩餘時間 |

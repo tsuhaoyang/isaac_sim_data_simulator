@@ -9,7 +9,7 @@ BASE_CFG = {
     "machines": {"count": 6},
     "arms": {"count": 2},
     "products": {"total": 30, "arrival_interval_s": 4.0, "arrival_jitter": "fixed"},
-    "process": {"machine_process_time_s": 20.0, "machine_load_time_s": 0.0},
+    "process": {"machine_process_time_s": 20.0, "tray_check_in_time_s": 0.0, "tray_check_out_time_s": 0.0},
     "arm": {"arm_move_time_s": 3.0, "arm_to_tray_time_s": 3.0},
     "error": {"error_prob_per_job": 0.0, "error_downtime_s": 30.0},
 }
@@ -44,7 +44,7 @@ def test_analytical_uses_separate_load_unload_times():
 def test_sim_consumes_all_products_when_provisioned():
     # plenty of capacity, no errors -> everything completes, queue stays tiny
     rep = run_one(
-        dict(arm_load_s=3.0, arm_unload_s=3.0, process_time_s=20.0, load_time_s=0.0, error_prob=0.0,
+        dict(arm_load_s=3.0, arm_unload_s=3.0, process_time_s=20.0, error_prob=0.0,
              error_downtime_s=30.0, arrival_interval_s=4.0, jitter="fixed", total=30),
         n_machine=6, n_arm=2, seed=1,
     )
@@ -55,7 +55,7 @@ def test_sim_consumes_all_products_when_provisioned():
 
 
 def test_sim_is_deterministic_with_seed():
-    proc = dict(arm_load_s=3.0, arm_unload_s=3.0, process_time_s=20.0, load_time_s=0.0, error_prob=0.3,
+    proc = dict(arm_load_s=3.0, arm_unload_s=3.0, process_time_s=20.0, error_prob=0.3,
                 error_downtime_s=30.0, arrival_interval_s=4.0, jitter="poisson", total=30)
     r1 = run_one(proc, 6, 2, seed=42)
     r2 = run_one(proc, 6, 2, seed=42)
@@ -65,7 +65,7 @@ def test_sim_is_deterministic_with_seed():
 def test_undercapacity_builds_a_large_queue():
     # one machine vs fast arrivals -> queue explodes, long waits
     rep = run_one(
-        dict(arm_load_s=3.0, arm_unload_s=3.0, process_time_s=20.0, load_time_s=0.0, error_prob=0.0,
+        dict(arm_load_s=3.0, arm_unload_s=3.0, process_time_s=20.0, error_prob=0.0,
              error_downtime_s=30.0, arrival_interval_s=2.0, jitter="fixed", total=30),
         n_machine=1, n_arm=1, seed=1,
     )

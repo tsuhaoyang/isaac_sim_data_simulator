@@ -52,7 +52,7 @@ class ProductArrived:
 @dataclass
 class MachineObserved:
     machine_id: str
-    state: str            # empty|start|working|done|error
+    state: str            # empty|check_in|working|check_out|done|error
     product_id: str | None = None
 
 
