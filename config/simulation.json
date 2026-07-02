@@ -6,25 +6,25 @@
     "count": 1
   },
   "products": {
-    "total": 250,
+    "total": 250000000000000,
     "arrival_interval_s": 4.0,
     "arrival_jitter": "poisson"
   },
   "process": {
     "machine_process_time_s": 50.0,
-    "tray_check_in_time_s": 2.0,
-    "tray_check_out_time_s": 2.0
+    "tray_check_in_time_s": 3.0,
+    "tray_check_out_time_s": 3.0
   },
   "arm": {
-    "arm_move_time_s": 5.0,
-    "arm_to_tray_time_s": 5.0,
+    "arm_move_time_s": 10.0,
+    "arm_to_tray_time_s": 10.0,
     "per_machine": {
-      "Tray_00": { "load_s": 2.7, "unload_s": 2.9 },
-      "Tray_01": { "load_s": 3.5, "unload_s": 3.7 },
-      "Tray_02": { "load_s": 3.9, "unload_s": 4.0 },
-      "Tray_03": { "load_s": 4.0, "unload_s": 3.9 },
-      "Tray_04": { "load_s": 3.7, "unload_s": 3.5 },
-      "Tray_05": { "load_s": 2.9, "unload_s": 2.7 }
+      "Tray_00": { "load_s": 10.0, "unload_s": 10.0 },
+      "Tray_01": { "load_s": 10.0, "unload_s": 10.0 },
+      "Tray_02": { "load_s": 10.0, "unload_s": 10.0 },
+      "Tray_03": { "load_s": 10.0, "unload_s": 10.0 },
+      "Tray_04": { "load_s": 10.0, "unload_s": 10.0 },
+      "Tray_05": { "load_s": 10.0, "unload_s": 10.0 }
     }
   },
   "error": {
