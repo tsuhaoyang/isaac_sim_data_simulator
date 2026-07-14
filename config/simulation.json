@@ -11,9 +11,16 @@
     "arrival_jitter": "poisson"
   },
   "process": {
-    "machine_process_time_s": 50.0,
+    "row_interval_s": 2.0,
+    "fail_recovery_s": 10.0,
     "tray_check_in_time_s": 3.0,
     "tray_check_out_time_s": 3.0
+  },
+  "test_data": {
+    "default": "demo.md.pass.txt",
+    "per_machine": {
+      "Tray_00": "demo.md.err.txt"
+    }
   },
   "arm": {
     "arm_move_time_s": 10.0,

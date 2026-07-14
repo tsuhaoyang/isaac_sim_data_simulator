@@ -18,9 +18,11 @@ services:
     environment:
       SERVICE_NAME: machine_simulator
       MACHINE_MODE: driven       # driven (M2 arm commands) | autonomous (M1 self-cycle)
+      TEST_DATA_DIR: /app/data   # 測試報告檔目錄
       # SIM_SEED: "42"           # uncomment for reproducible faults
     volumes:
       - ./config:/app/config:ro   # edit config/*.json then `docker compose restart` (no rebuild)
+      - ./services/machine_simulator/data:/app/data:ro   # 測試報告 (.md.txt)
     depends_on:
       - broker
     restart: unless-stopped
@@ -50,8 +52,10 @@ services:
     env_file: .env
     environment:
       SERVICE_NAME: scheduler_engine
+      TEST_DATA_DIR: /app/data
     volumes:
       - ./config:/app/config:ro   # edit config/*.json then `docker compose restart` (no rebuild)
+      - ./services/machine_simulator/data:/app/data:ro   # capacity 讀測試報告推算 process time
     depends_on:
       - broker
     restart: unless-stopped

@@ -1,12 +1,12 @@
 """Capacity planner (b.4 / SPEC §5.5): analytical estimate + simulation validation.
 
-analytical (per arrival, p=error_prob, D=downtime):
-    machine-time/arrival = (1-p)*t_proc + p*(t_proc/2) + p*D
-    arm-time/arrival     = t_load + (1-p)*t_unload   # always 1 load; unload only if completed
+測試機版：working 時間由報告推算（測項數 × row_interval + FAIL 數 × fail_recovery），
+不寫死。每顆板子機台佔用 = check_in + working + check_out。
+
+    machine-time/arrival = check_in + working + check_out
+    arm-time/arrival     = t_load + t_unload
     N_machine >= ceil(lambda * machine-time/arrival)
     N_arm     >= ceil(lambda * arm-time/arrival)
-(t_load=arm_move_time_s ProductIn->machine; t_unload=arm_to_tray_time_s machine->ProductOut.
- p=0 & t_load==t_unload reduces to SPEC's N_machine>=lambda*t_proc, N_arm>=lambda*2*t_move.)
 
 Then validate by running the real SchedulingPolicy under VirtualClock across seeds;
 if mean wait exceeds the target, bump the bottleneck resource and re-run.
@@ -14,33 +14,45 @@ if mean wait exceeds the target, bump the bottleneck resource and re-run.
 
 import argparse
 import math
+import os
+from pathlib import Path
 from statistics import mean
 
 from isaac_common.arm_timing import ArmTimes
 from isaac_common.config import load_json, machine_ids
+from isaac_common.test_report import report_stats
 
 from sim_driver import SimReport, run_one
+
+
+def _working_time(cfg: dict) -> float:
+    """Machine 'working' time per board = 測項數 × interval + FAIL 數 × recovery，
+    由代表性報告（test_data.default）推算——不寫死。"""
+    proc = cfg["process"]
+    interval = float(proc.get("row_interval_s", 2.0))
+    recovery = float(proc.get("fail_recovery_s", 10.0))
+    default_file = cfg.get("test_data", {}).get("default")
+    if not default_file:
+        return float(proc.get("machine_process_time_s", 0.0))   # 舊 config 相容
+    rows, fails = report_stats(Path(os.getenv("TEST_DATA_DIR", "/app/data")) / default_file)
+    return rows * interval + fails * recovery
 
 
 def analytical(cfg: dict) -> dict:
     interval = float(cfg["products"]["arrival_interval_s"])
     lam = 1.0 / interval
-    t_proc = float(cfg["process"]["machine_process_time_s"])
-    # capacity decides HOW MANY machines, so use the mean per-machine arm time
-    t_load, t_unload = ArmTimes(cfg).averages(machine_ids(cfg))
-    p = float(cfg["error"]["error_prob_per_job"])
-    d = float(cfg["error"]["error_downtime_s"])
-
+    t_work = _working_time(cfg)
+    t_load, t_unload = ArmTimes(cfg).averages(machine_ids(cfg))  # 決定「幾台」用平均 arm 時間
     cin = float(cfg["process"].get("tray_check_in_time_s", 0.0))
     cout = float(cfg["process"].get("tray_check_out_time_s", 0.0))
-    # machine busy per arrival: good job = check_in + proc + check_out; fault = check_in + half proc + downtime
-    t_machine = (1 - p) * (cin + t_proc + cout) + p * (cin + t_proc / 2 + d)
-    t_arm = t_load + (1 - p) * t_unload
+    t_machine = cin + t_work + cout            # 一顆板子機台佔用（含收合/吐出/測試/FAIL recovery）
+    t_arm = t_load + t_unload
     return {
         "lambda": lam, "t_machine_per_arrival": t_machine, "t_arm_per_arrival": t_arm,
+        "t_work": t_work,
         "n_machine": max(1, math.ceil(lam * t_machine)),
         "n_arm": max(1, math.ceil(lam * t_arm)),
-        "availability": (1 - p) * t_proc / t_machine if t_machine else 1.0,
+        "availability": t_work / t_machine if t_machine else 1.0,
     }
 
 
@@ -49,14 +61,14 @@ def _proc_params(cfg: dict) -> dict:
     return dict(
         arm_load_s=avg_load,
         arm_unload_s=avg_unload,
-        process_time_s=float(cfg["process"]["machine_process_time_s"]),
+        process_time_s=_working_time(cfg),          # 測試總時長（測項+FAIL recovery）
         check_in_time_s=float(cfg["process"].get("tray_check_in_time_s", 0.0)),
         check_out_time_s=float(cfg["process"].get("tray_check_out_time_s", 0.0)),
-        error_prob=float(cfg["error"]["error_prob_per_job"]),
-        error_downtime_s=float(cfg["error"]["error_downtime_s"]),
+        error_prob=0.0,                             # 測試機無隨機 error；問題來自資料 FAIL（已含在 process_time）
+        error_downtime_s=0.0,
         arrival_interval_s=float(cfg["products"]["arrival_interval_s"]),
         jitter=str(cfg["products"].get("arrival_jitter", "fixed")),
-        total=int(cfg["products"]["total"]),
+        total=min(int(cfg["products"]["total"]), 200),   # 容量驗證只需取樣，config total 可能極大
     )
 
 

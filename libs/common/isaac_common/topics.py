@@ -21,6 +21,14 @@ def machine_telemetry(machine_id: str) -> str:
     return f"plant/machine/{machine_id}/telemetry"
 
 
+def machine_test(machine_id: str) -> str:
+    return f"plant/machine/{machine_id}/test"        # 逐筆測項（內部，不轉 Isaac）
+
+
+def plant_test_filter() -> str:
+    return "plant/machine/+/test"
+
+
 def plant_state_filter() -> str:
     return "plant/machine/+/state"
 

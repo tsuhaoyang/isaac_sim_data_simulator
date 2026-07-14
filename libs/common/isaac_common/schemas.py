@@ -55,6 +55,20 @@ class ArmCommand(BaseModel):
     ts: float = Field(default_factory=_now)
 
 
+# --- per test-item event (測試機逐筆測項, SPEC §4) ---
+class MachineTestEvent(BaseModel):
+    machine_id: str
+    product_id: str | None = None
+    index: int                 # 1-based 測項序
+    total: int                 # 該板總測項數
+    board: str
+    item: str                  # device / net 名稱
+    result: str                # PASS | FAIL
+    fault: str | None = None   # Power | GND | None
+    path: list[str] = Field(default_factory=list)  # FAIL 路徑（PASS 為空）
+    ts: float = Field(default_factory=_now)
+
+
 # --- Isaac Sim command (SPEC §6.4) ---
 class Waypoint(BaseModel):
     key: str

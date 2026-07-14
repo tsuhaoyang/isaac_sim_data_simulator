@@ -15,7 +15,7 @@ from isaac_common import topics
 from isaac_common.event_sink import make_sink
 from isaac_common.logging import get_logger
 from isaac_common.mqtt_client import MqttClient
-from isaac_common.schemas import ArmCommand, EventRecord, MachineStateEvent
+from isaac_common.schemas import ArmCommand, EventRecord, MachineStateEvent, MachineTestEvent
 from isaac_common.settings import Settings
 
 from collector import Collector
@@ -73,6 +73,23 @@ def main() -> None:
                 detail={"task_id": cmd.task_id},
             ))
 
+    def on_test_item(topic: str, payload) -> None:
+        # 逐筆測項 -> 歷史事件紀錄表（含 FAIL path）；不轉 Isaac
+        try:
+            ev = MachineTestEvent.model_validate(payload)
+        except Exception:
+            return
+        with ingest_lock:
+            collector.log_event(EventRecord(
+                ts=ev.ts, entity_type="test", entity_id=ev.machine_id, event=ev.result,
+                product_id=ev.product_id,
+                detail={"index": ev.index, "total": ev.total, "item": ev.item,
+                        "fault": ev.fault, "path": ev.path},
+            ))
+        if ev.result == "FAIL":
+            log.info("%s test #%d/%d %s FAIL(%s) path[%d]", ev.machine_id, ev.index, ev.total,
+                     ev.item, ev.fault, len(ev.path))
+
     def on_control(topic: str, payload) -> None:
         cmd = payload.get("cmd") if isinstance(payload, dict) else None
         if cmd:
@@ -83,6 +100,7 @@ def main() -> None:
     client.subscribe(topics.plant_state_filter(), on_machine_state)
     client.subscribe("plant/machine/+/telemetry", on_machine_telemetry)
     client.subscribe(topics.SCHEDULER_COMMAND, on_arm_command)  # ArmCommand (from/to) — §7.2
+    client.subscribe(topics.plant_test_filter(), on_test_item)  # 逐筆測項
     client.subscribe(topics.SIM_CONTROL, on_control)
     client.connect()
     log.info("data_collector up: storage=%s -> %s", settings.storage_backend, store_path)

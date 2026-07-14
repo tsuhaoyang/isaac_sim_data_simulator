@@ -63,16 +63,18 @@ def test_unload_has_priority_over_load():
     assert p.metrics["completed"] == 1
 
 
-def test_error_scraps_inprogress_product():
+def test_error_is_transient_not_scrapped():
+    # 工作中的 error = 測試 FAIL 復原中，機台仍忙、不報廢、繼續等 done
     p = _policy()
     p.handle(ProductArrived("P1"))            # loads onto a machine
     mid = next(m.id for m in p.machines.values() if m.status == MStatus.BUSY)
     p.handle(MachineObserved(mid, "error", "P1"))
-    assert p.metrics["scrapped"] == 1
-    assert p.machines[mid].status == MStatus.DOWN
-    # recovery -> free again
-    p.handle(MachineObserved(mid, "empty"))
-    assert p.machines[mid].status == MStatus.FREE
+    assert p.metrics["scrapped"] == 0
+    assert p.machines[mid].status == MStatus.BUSY   # 仍保留、不釋放
+    p.handle(MachineObserved(mid, "working", "P1"))  # 復原回 working
+    assert p.machines[mid].status == MStatus.BUSY
+    p.handle(MachineObserved(mid, "done", "P1"))     # 測完
+    assert p.machines[mid].status == MStatus.DONE
 
 
 def test_full_cycle_completes():

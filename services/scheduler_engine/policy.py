@@ -109,15 +109,10 @@ class SchedulingPolicy:
             return
         if ev.state == "done":
             m.status = MStatus.DONE
-        elif ev.state == "error":
-            if m.product is not None:
-                self.metrics["scrapped"] += 1      # 在製品報廢
-            m.product = None
-            m.status = MStatus.DOWN
         elif ev.state == "empty":
             m.product = None
-            m.status = MStatus.FREE                 # unload done, or error recovered
-        # start/working -> already reserved BUSY, ignore
+            m.status = MStatus.FREE                 # unload 完成 -> 機台可用
+        # check_in / working / error -> 機台仍忙（error = 測試 FAIL 復原中，不報廢），維持 BUSY 保留
 
     def _try_act(self) -> list[Decision]:
         decisions: list[Decision] = []

@@ -43,18 +43,18 @@ flowchart LR
 
 > 所有實線/虛線皆經 Mosquitto broker 以 MQTT topic 溝通（socket 來源除外）。虛線回到 machine_simulator 表示 `driven` 模式下機台訂閱手臂指令而反應——形成閉環：指令 → 機台動作 → 新狀態 telemetry → 排程下一步。
 
-機台狀態機（SPEC §4）：
+機台狀態機（SPEC §4）——**每台 Tray 是測試機**，`working` = 逐筆串流測項（每 `row_interval_s` 一筆）；遇 FAIL → 進 `error` 停 `fail_recovery_s` → 回 `working` 續測（不中止、不報廢、verdict=FAIL），測項細節走 `plant/machine/{id}/test`：
 
 ```mermaid
 stateDiagram-v2
     [*] --> empty
     empty --> check_in: 手臂放料 (load)
     check_in --> working: Tray 收合完成
-    working --> check_out: 作業時間到
-    working --> error: 隨機故障 (在製品報廢)
+    working --> check_out: 測項全測完
+    working --> error: 遇 FAIL
+    error --> working: fail_recovery 後續測 (不報廢)
     check_out --> done: Tray 吐出完成
     done --> empty: 手臂取料 (unload)
-    error --> empty: 停機 downtime 結束
 ```
 
 | 服務 | 職責 |
@@ -93,6 +93,7 @@ isaacsim/machine/state        # 一包含 Tray_00~Tray_05
 | Topic | 發佈者 → 訂閱者 | retained |
 |---|---|---|
 | `plant/machine/{id}/state` `/telemetry` | machine_simulator / 真機台 → data_collector | state=是 |
+| `plant/machine/{id}/test` | machine_simulator → data_collector（逐筆測項，含 FAIL path；**不轉 Isaac**） | 否 |
 | `telemetry/machine/{id}/state` | data_collector → scheduler_engine | 是 |
 | `scheduler/command` | scheduler_engine → mqtt_publisher | 否 |
 | `scheduler/metrics` | scheduler_engine → (dashboard/log) | 否 |
@@ -141,8 +142,10 @@ empty ──load──▶ check_in(Tray收合) ──▶ working ──▶ check
 |---|---|
 | `machines.count` / `arms.count` | 機台數 / 手臂數 |
 | `products.total` / `arrival_interval_s` / `arrival_jitter` | 產品總數 / 進線間隔 / 抖動(`poisson`\|`fixed`) |
-| `process.machine_process_time_s` | 機台加工時間 (working) |
+| `process.row_interval_s` | 每筆測項間隔（working = 逐筆串流測項） |
+| `process.fail_recovery_s` | 遇 FAIL 的復原時間（停一下再續測，如同 error 佔用時間） |
 | `process.tray_check_in_time_s` / `tray_check_out_time_s` | Tray 收合 (check_in) / 吐出 (check_out) 時間 |
+| `test_data.default` / `per_machine` | 各機台的測試報告檔（`services/machine_simulator/data/*.txt`）；`per_machine` 指定某台用哪份（如唯一有 FAIL 的） |
 | `arm.arm_move_time_s` / `arm_to_tray_time_s` | 上料/下料的**基礎(base)**時間（每台共用，如夾取/接近） |
 | `arm.per_machine` | 各機台**額外加**的 load/unload 秒數（位置差異的移動量）。**實際時間 = base + delta**；沒列到的 delta=0。scheduler 會**優先選最快的空機台** |
 | `error.error_prob_per_job` / `error_downtime_s` | 每件故障機率 / 停機時間 |

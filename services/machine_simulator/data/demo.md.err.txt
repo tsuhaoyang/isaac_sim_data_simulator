@@ -1,0 +1,279 @@
+### Device Test Report
+ 
+| Board | Device | TotalPin | TestedPin | TestResult |
+| ----- | ------ | -------- | --------- | ---------- |
+| BMC_Interposer | J1 | 168 | 168 PASS |  
+| BMC_Interposer | J3 | 74 | 70 PASS |  
+| BMC_Interposer | J4 | 74 | 73 PASS |  
+| BMC_Interposer | J6 | 6 | 6 | PASS |
+| BMC_Interposer | J7 | 74 | 73 PASS |  
+| BMC_Interposer | R1 | 2 | 2 PASS |  
+| BMC_Interposer | R10 | 2 | 2 | PASS |
+| BMC_Interposer | R100 | 2 | 2 | PASS |
+| BMC_Interposer | R101 | 2 | 2 | PASS |
+| BMC_Interposer | R11 | 2 | 2 | PASS |
+| BMC_Interposer | R12 | 2 | 2 | PASS |
+| BMC_Interposer | R13 | 2 | 2 | PASS |
+| BMC_Interposer | R14 | 2 | 2 | PASS |
+| BMC_Interposer | R15 | 2 | 2 | PASS |
+| BMC_Interposer | R151 | 2 | 2 | PASS |
+| BMC_Interposer | R152 | 2 | 2 | PASS |
+| BMC_Interposer | R153 | 2 | 2 | PASS |
+| BMC_Interposer | R154 | 2 | 2 | PASS |
+| BMC_Interposer | R155 | 2 | 2 | PASS |
+| BMC_Interposer | R16 | 2 | 2 | PASS |
+| BMC_Interposer | R165 | 2 | 1 | PASS |
+| BMC_Interposer | R17 | 2 | 2 | PASS |
+| BMC_Interposer | R18 | 2 | 2 | PASS |
+| BMC_Interposer | R19 | 2 | 2 | PASS |
+| BMC_Interposer | R194 | 2 | 2 | PASS |
+| BMC_Interposer | R195 | 2 | 1 | PASS |
+| BMC_Interposer | R2 | 2 | 2 | PASS |
+| BMC_Interposer | R20 | 2 | 2 | PASS |
+| BMC_Interposer | R21 | 2 | 2 | PASS |
+| BMC_Interposer | R22 | 2 | 2 | PASS |
+| BMC_Interposer | R23 | 2 | 2 | PASS |
+| BMC_Interposer | R24 | 2 | 2 | PASS |
+| BMC_Interposer | R25 | 2 | 2 | PASS |
+| BMC_Interposer | R26 | 2 | 2 PASS |  
+| BMC_Interposer | R27 | 2 | 2 PASS |  
+| BMC_Interposer | R28 | 2 | 2 | PASS |
+| BMC_Interposer | R3 | 2 | 2 | PASS |
+| BMC_Interposer | R31 | 2 | 2 | PASS |
+| BMC_Interposer | R32 | 2 | 2 | PASS |
+| BMC_Interposer | R33 | 2 | 2 | PASS |
+| BMC_Interposer | R34 | 2 | 2 | PASS |
+| BMC_Interposer | R35 | 2 | 2 | PASS |
+| BMC_Interposer | R36 | 2 | 2 | PASS |
+| BMC_Interposer | R37 | 2 | 2 | PASS |
+| BMC_Interposer | R38 | 2 | 2 | PASS |
+| BMC_Interposer | R39 | 2 | 2 | PASS |
+| BMC_Interposer | R4 | 2 | 2 | PASS |
+| BMC_Interposer | R40 | 2 | 2 | PASS |
+| BMC_Interposer | R41 | 2 | 2 | PASS |
+| BMC_Interposer | R42 | 2 | 2 | PASS |
+| BMC_Interposer | R43 | 2 | 2 | PASS |
+| BMC_Interposer | R44 | 2 | 2 | PASS |
+| BMC_Interposer | R45 | 2 | 2 | PASS |
+| BMC_Interposer | R46 | 2 | 2 | PASS |
+| BMC_Interposer | R47 | 2 | 2 | PASS |
+| BMC_Interposer | R48 | 2 | 2 PASS |  
+| BMC_Interposer | R49 | 2 | 2 PASS |  
+| BMC_Interposer | R5 | 2 | 2 | PASS |
+| BMC_Interposer | R50 | 2 | 2 PASS |  
+| BMC_Interposer | R51 | 2 | 2 | PASS |
+| BMC_Interposer | R52 | 2 | 2 | PASS |
+| BMC_Interposer | R53 | 2 | 2 | PASS |
+| BMC_Interposer | R54 | 2 | 2 | PASS |
+| BMC_Interposer | R55 | 2 | 2 | PASS |
+| BMC_Interposer | R56 | 2 | 2 | PASS |
+| BMC_Interposer | R57 | 2 | 2 | PASS |
+| BMC_Interposer | R58 | 2 | 2 | PASS |
+| BMC_Interposer | R59 | 2 | 2 | PASS |
+| BMC_Interposer | R6 | 2 | 2 | PASS |
+| BMC_Interposer | R60 | 2 | 2 | PASS |
+| BMC_Interposer | R61 | 2 | 2 | PASS |
+| BMC_Interposer | R62 | 2 | 2 | PASS |
+| BMC_Interposer | R63 | 2 | 2 | PASS |
+| BMC_Interposer | R64 | 2 | 2 | PASS |
+| BMC_Interposer | R65 | 2 | 2 | PASS |
+| BMC_Interposer | R66 | 2 | 2 | PASS |
+| BMC_Interposer | R67 | 2 | 2 | PASS |
+| BMC_Interposer | R68 | 2 | 2 | PASS |
+| BMC_Interposer | R69 | 2 | 2 | PASS |
+| BMC_Interposer | R7 | 2 | 2 | PASS |
+| BMC_Interposer | R70 | 2 | 2 | PASS |
+| BMC_Interposer | R71 | 2 | 2 | PASS |
+| BMC_Interposer | R72 | 2 | 2 | PASS |
+| BMC_Interposer | R73 | 2 | 2 | PASS |
+| BMC_Interposer | R74 | 2 | 2 | PASS |
+| BMC_Interposer | R75 | 2 | 2 | PASS |
+| BMC_Interposer | R76 | 2 | 2 | PASS |
+| BMC_Interposer | R77 | 2 | 2 | PASS |
+| BMC_Interposer | R78 | 2 | 2 | PASS |
+| BMC_Interposer | R79 | 2 | 2 | PASS |
+| BMC_Interposer | R8 | 2 | 2 | PASS |
+| BMC_Interposer | R80 | 2 | 2 | PASS |
+| BMC_Interposer | R81 | 2 | 2 | PASS |
+| BMC_Interposer | R82 | 2 | 2 | PASS |
+| BMC_Interposer | R83 | 2 | 2 | PASS |
+| BMC_Interposer | R84 | 2 | 2 | PASS |
+| BMC_Interposer | R85 | 2 | 2 | PASS |
+| BMC_Interposer | R86 | 2 | 2 | PASS |
+| BMC_Interposer | R87 | 2 | 2 | PASS |
+| BMC_Interposer | R88 | 2 | 2 | PASS |
+| BMC_Interposer | R89 | 2 | 2 | PASS |
+| BMC_Interposer | R9 | 2 | 2 | PASS |
+| BMC_Interposer | R90 | 2 | 2 | PASS |
+| BMC_Interposer | R91 | 2 | 2 | PASS |
+| BMC_Interposer | R92 | 2 | 2 | PASS |
+| BMC_Interposer | R93 | 2 | 2 | PASS |
+| BMC_Interposer | R94 | 2 | 2 | PASS |
+| BMC_Interposer | R95 | 2 | 2 | PASS |
+| BMC_Interposer | R96 | 2 | 2 | PASS |
+| BMC_Interposer | R97 | 2 | 2 | PASS |
+| BMC_Interposer | R98 | 2 | 2 | PASS |
+| BMC_Interposer | R99 | 2 | 2 | PASS |
+| BMC_Interposer | U1 | 43 | 33 | PASS |
+| BMC_Interposer | U10 | 8 | 4 | PASS |
+| BMC_Interposer | U3 | 25 | 17 | PASS |
+| BMC_Interposer | U5 | 25 | 19 | PASS |
+| BMC_Interposer | U6 | 8 | 3 | PASS |
+ 
+ 
+ 
+ 
+## Net Test Report
+
+| Board | Net | Covered | TestResult | TestData |
+| ----- | --- | ------- | ---------- | -------- |
+| BMC_Interposer | 555_CONT | true | PASS |  |
+| BMC_Interposer | 555_OUT | true | PASS |  |
+| BMC_Interposer | BMC_DP_AUX_DN | true | FAIL | Remarks:This pin may be open or short with Power Test Path : Riser Card.J1004.B32->Riser Card.J22.A13->SPB_PCIE_Riser2.J1.A13->SPB_PCIE_Riser2.R5.1->SPB_PCIE_Riser2.R5.2->SPB_PCIE_Riser2.J3.A33->BMC_Interposer.J7.A33->BMC_Interposer.U1.41->BMC_Interposer.U1.4->BMC_Interposer.J1.OB5->J1_Riser.J1.OB5->J1_Riser.PCIE1.A78 |
+| BMC_Interposer | BMC_DP_AUX_DP | true | PASS |  | 
+| BMC_Interposer | BMC_DP_L0_DP | true | PASS |  | 
+| BMC_Interposer | BMC_DP_L1_DN | true | PASS |  | 
+| BMC_Interposer | BMC_FPGA_PERST_N | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_RX_CLK_DN | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_RX_CLK_DP | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_RX_DN | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_RX_DP | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_TX_CLK_DN | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_TX_CLK_DP | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_TX_DN | true | PASS |  |
+| BMC_Interposer | BMC_LTPI_TX_DP | true | PASS |  |
+| BMC_Interposer | BMC_READY | true | PASS | 01110010110 |
+| BMC_Interposer | CPU_UART_A_RX | true | PASS |  |
+| BMC_Interposer | CPU_UART_A_TX | true | PASS |  |
+| BMC_Interposer | DC_SNN_BMC_A63 | true | PASS | 10110001110,HLHHLLLHHHL |
+| BMC_Interposer | DC_SNN_BMC_A65 | true | PASS | 01110001110,LHHHLLLHHHL |
+| BMC_Interposer | DC_SNN_BMC_A66 | true | PASS | 11001001110,HHLLHLLHHHL |
+| BMC_Interposer | DC_SNN_BMC_B12 | true | PASS | 00110101110,LLHHLHLHHHL |
+| BMC_Interposer | DC_SNN_BMC_B13 | true | PASS | 10001101110,HLLLHHLHHHL |
+| BMC_Interposer | DC_SNN_BMC_B14 | true | PASS | 01001101110,LHLLHHLHHHL |
+| BMC_Interposer | DC_SNN_BMC_B15 | true | PASS | 00101101110,LLHLHHLHHHL |
+| BMC_Interposer | DC_SNN_BMC_B68 | true | PASS | 00110011110,LLHHLLHHHHL |
+| BMC_Interposer | DC_SNN_BMC_B69 | true | PASS | 10001011110,HLLLHLHHHHL |
+| BMC_Interposer | DC_SNN_BMC_GPIO18B7 | true | PASS | 11000011110,HHLLLLHHHHL |
+| BMC_Interposer | DC_SNN_BMC_GPIO18C0 | true | PASS | 00011101110,LLLHHHLHHHL |
+| BMC_Interposer | DC_SNN_BMC_I2C4_SCL | true | PASS | 10100011110,HLHLLLHHHHL |
+| BMC_Interposer | DC_SNN_BMC_I2C4_SDA | true | PASS | 01100011110,LHHLLLHHHHL |
+| BMC_Interposer | DC_SNN_BMC_PEX_FPGA_REFCLK_DN | true | PASS | 10101001110,HLHLHLLHHHL |
+| BMC_Interposer | DC_SNN_BMC_PEX_FPGA_REFCLK_DP | true | PASS | 01101001110,LHHLHLLHHHL |
+| BMC_Interposer | DC_SNN_ESPIALT_LSIRQ_C_N | true | PASS | 01010101110,LHLHLHLHHHL |
+| BMC_Interposer | DC_SNN_ESPICLK_LCLK_C | true | PASS | 10011001110,HLLHHLLHHHL |
+| BMC_Interposer | DC_SNN_ESPICS_LFRAME_C_N | true | PASS | 01011001110,LHLHHLLHHHL |
+| BMC_Interposer | DC_SNN_ESPID0_LAD0_C | true | PASS | 11000101110,HHLLLHLHHHL |
+| BMC_Interposer | DC_SNN_ESPID0_LAD1_C | true | PASS | 10100101110,HLHLLHLHHHL |
+| BMC_Interposer | DC_SNN_ESPID0_LAD2_C | true | PASS | 01100101110,LHHLLHLHHHL |
+| BMC_Interposer | DC_SNN_ESPID0_LAD3_C | true | PASS | 10010101110,HLLHLHLHHHL |
+| BMC_Interposer | DC_SNN_ESPIRST_LPCRST_C_N | true | PASS | 00111001110,LLHHHLLHHHL |
+| BMC_Interposer | DC_SNN_I2C2_SCL | true | PASS | 10011001110,HLLHHLLHHHL |
+| BMC_Interposer | DC_SNN_I2C2_SDA | true | PASS | 01011001110,LHLHHLLHHHL |
+| BMC_Interposer | DC_SNN_I2C_BMC_BUS16_SCL | true | PASS | 11100001110,HHHLLLLHHHL |
+| BMC_Interposer | DC_SNN_I2C_BMC_BUS16_SDA | true | PASS | 11010001110,HHLHLLLHHHL |
+| BMC_Interposer | DC_SNN_IOB_PERST_L | true | PASS | 00011110110,LLLHHHHLHHL |
+| BMC_Interposer | DC_SNN_IOB_WAKE_L | true | PASS | 11100001110,HHHLLLLHHHL |
+| BMC_Interposer | DC_SNN_NCSI_CLK | true | PASS | 11000011110,HHLLLLHHHHL |
+| BMC_Interposer | DC_SNN_NCSI_CRS_DV | true | PASS | 10001101110,HLLLHHLHHHL |
+| BMC_Interposer | DC_SNN_NCSI_RX_D0 | true | PASS | 11010001110,HHLHLLLHHHL |
+| BMC_Interposer | DC_SNN_NCSI_RX_D1 | true | PASS | 10110001110,HLHHLLLHHHL |
+| BMC_Interposer | DC_SNN_NCSI_TX_D0 | true | PASS | 00101101110,LLHLHHLHHHL |
+| BMC_Interposer | DC_SNN_NCSI_TX_D1 | true | PASS | 00011101110,LLLHHHLHHHL |
+| BMC_Interposer | DC_SNN_NCSI_TX_EN | true | PASS | 01001101110,LHLLHHLHHHL |
+| BMC_Interposer | DC_SNN_OA02 | true | PASS | 01001011110,LHLLHLHHHHL |
+| BMC_Interposer | DC_SNN_OA03 | true | PASS | 00101011110,LLHLHLHHHHL |
+| BMC_Interposer | DC_SNN_OA14 | true | PASS | 00011011110,LLLHHLHHHHL |
+| BMC_Interposer | DC_SNN_OCI_L | true | PASS | 01010011110,LHLHLLHHHHL |
+| BMC_Interposer | DC_SNN_PPON | true | PASS | 00110011110,LLHHLLHHHHL |
+| BMC_Interposer | DC_SNN_PVCCIO_PECI_C | true | PASS | 00100111110,LLHLLHHHHHL |
+| BMC_Interposer | DC_SNN_REFCLK_DN | true | PASS | 01101001110,LHHLHLLHHHL |
+| BMC_Interposer | DC_SNN_REFCLK_DP | true | PASS | 10101001110,HLHLHLLHHHL |
+| BMC_Interposer | DC_SNN_RSVD_A20 | true | PASS | 01110001110,LHHHLLLHHHL |
+| BMC_Interposer | DC_SNN_RSVD_A21 | true | PASS | 11001001110,HHLLHLLHHHL |
+| BMC_Interposer | DC_SNN_RSVD_B10 | true | PASS | 10010101110,HLLHLHLHHHL |
+| BMC_Interposer | DC_SNN_SPI_EROT_HMC_IO2 | true | PASS | 01100110110,LHHLLHHLHHL |
+| BMC_Interposer | DC_SNN_SPI_EROT_HMC_IO3 | true | PASS | 10010110110,HLLHLHHLHHL |
+| BMC_Interposer | DC_SNN_UART1_RX | true | PASS | 00110101110,LLHHLHLHHHL |
+| BMC_Interposer | DC_SNN_UART1_TX | true | PASS | 01010101110,LHLHLHLHHHL |
+| BMC_Interposer | DC_SNN_UART2_RX | true | PASS | 01100101110,LHHLLHLHHHL |
+| BMC_Interposer | DC_SNN_UART2_TX | true | PASS | 10100101110,HLHLLHLHHHL |
+| BMC_Interposer | DC_SNN_USB3_RX_DN | true | PASS | 11000101110,HHLLLHLHHHL |
+| BMC_Interposer | DC_SNN_USB3_RX_DP | true | PASS | 00111001110,LLHHHLLHHHL |
+| BMC_Interposer | DC_SNN_USB3_SCMHOST1_HPM_SCM_DN | true | PASS | 10010011110,HLLHLLHHHHL |
+| BMC_Interposer | DC_SNN_USB3_SCMHOST1_HPM_SCM_DP | true | PASS | 01010011110,LHLHLLHHHHL |
+| BMC_Interposer | DC_SNN_USB3_SCMHOST2_HPM_SCM_DN | true | PASS | 10000111110,HLLLLHHHHHL |
+| BMC_Interposer | DC_SNN_USB3_SCMHOST2_HPM_SCM_DP | true | PASS | 01000111110,LHLLLHHHHHL |
+| BMC_Interposer | DC_SNN_USB3_TX_DN | true | PASS | 00101011110,LLHLHLHHHHL |
+| BMC_Interposer | DC_SNN_USB3_TX_DP | true | PASS | 01001011110,LHLLHLHHHHL |
+| BMC_Interposer | DISPLAYPORT_AUX_DN | true | PASS |  |
+| BMC_Interposer | DISPLAYPORT_AUX_DP | true | PASS |  |
+| BMC_Interposer | DISPLAYPORT_SCM_HPM_L0_DN | true | PASS |  |
+| BMC_Interposer | DISPLAYPORT_SCM_HPM_L0_DP | true | PASS |  |
+| BMC_Interposer | DISPLAYPORT_SCM_HPM_L1_DN | true | PASS |  |
+| BMC_Interposer | DISPLAYPORT_SCM_HPM_L1_DP | true | PASS |  |
+| BMC_Interposer | DP_MUX_SEL1 | true | PASS |  |
+| BMC_Interposer | GND | true | PASS |  |
+| BMC_Interposer | HMC_RST_L | true | PASS |  |
+| BMC_Interposer | HPM_SCM_INTRUSION_N | true | PASS |  |
+| BMC_Interposer | HPM_SCM_STBY_RDY | true | PASS |  |
+| BMC_Interposer | I2C0_FPGA_HMC_SCL | true | PASS |  |
+| BMC_Interposer | I2C0_FPGA_HMC_SDA | true | PASS |  |
+| BMC_Interposer | I2C1_FPGA_HMC_SCL | true | PASS |  |
+| BMC_Interposer | I2C1_FPGA_HMC_SDA | true | PASS |  |
+| BMC_Interposer | I2C_1_IOB_SCL | true | FAIL | Remarks:This pin may be open or short with Power Test Path : Riser Card.J1004.B25->Riser Card.J22.A20->SPB_PCIE_Riser2.J1.A20->SPB_PCIE_Riser2.R11.1->SPB_PCIE_Riser2.R11.2->SPB_PCIE_Riser2.J3.A26->BMC_Interposer.J7.A26->BMC_Interposer.R48.2->BMC_Interposer.R48.1->BMC_Interposer.J1.A49->J1_Riser.J1.A49->J1_Riser.PCIE1.B49 |
+| BMC_Interposer | I2C_1_IOB_SDA | true | PASS |  | 
+| BMC_Interposer | I2C_3V3_0_SCL | true | PASS |  |
+| BMC_Interposer | I2C_3V3_0_SDA | true | PASS |  |
+| BMC_Interposer | I2C_3V3_1_SCL | true | PASS |  |
+| BMC_Interposer | I2C_3V3_1_SDA | true | PASS |  |
+| BMC_Interposer | I2C_3V3_2_SCL | true | PASS |  |
+| BMC_Interposer | I2C_3V3_2_SDA | true | PASS |  |
+| BMC_Interposer | I2C_3V3_3_SCL | true | PASS |  |
+| BMC_Interposer | I2C_3V3_3_SDA | true | PASS |  |
+| BMC_Interposer | I2C_3V3_4_SCL | true | PASS |  |
+| BMC_Interposer | I2C_3V3_4_SDA | true | PASS |  |
+| BMC_Interposer | I2C_3V3_5_SCL | true | FAIL | Remarks:This pin may be open or short with GND Test Path : Riser Card.J1003.A55->Riser Card.J21.A17->SPB_PCIE_Riser.J1.A17->SPB_PCIE_Riser.R8.1->SPB_PCIE_Riser.R8.2->SPB_PCIE_Riser.J3.A29->BMC_Interposer.J3.A29->BMC_Interposer.R16.2->BMC_Interposer.R16.1->BMC_Interposer.R50.2->BMC_Interposer.R50.1->BMC_Interposer.J7.B29->SPB_PCIE_Riser2.J3.B29->SPB_PCIE_Riser2.R77.2->SPB_PCIE_Riser2.R77.1->SPB_PCIE_Riser2.J1.B17->Riser Card.J22.B17->Riser Card.J1004.B66 |
+| BMC_Interposer | I2C_3V3_5_SDA | true | PASS |  | 
+| BMC_Interposer | I2C_3V3_6_SCL | true | PASS |  |
+| BMC_Interposer | I2C_3V3_6_SDA | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS12_SCL | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS12_SDA | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS15_SCL | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS15_SDA | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS16_SCL | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS16_SDA | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS5_SCL | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS5_SDA | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS6_SCL | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS6_SDA | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS7_SCL | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS7_SDA | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS9_SCL | true | PASS |  |
+| BMC_Interposer | I2C_BMC_BUS9_SDA | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V0_18_SCL | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V0_18_SDA | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V0_19_SCL | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V0_19_SDA | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V2_18_SCL_R | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V2_18_SDA_R | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_12_SCL | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_12_SDA | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_13_SCL | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_13_SDA | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_14_SCL | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_14_SDA | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_17_SCL | true | PASS |  |
+| BMC_Interposer | I2C_I3C_1V8_17_SDA | true | PASS |  |
+| BMC_Interposer | I2C_IOX_INT_L | true | PASS |  |
+| BMC_Interposer | I2C_IOX_R_SCL | true | PASS |  |
+| BMC_Interposer | I2C_IOX_R_SDA | true | PASS |  |
+| BMC_Interposer | I2C_IOX_SCL | true | PASS |  |
+| BMC_Interposer | I2C_IOX_SDA | true | PASS |  |
+| BMC_Interposer | I2C_SSIF_SCL | true | PASS |  |
+| BMC_Interposer | I2C_SSIF_SDA | true | PASS |  |
+| BMC_Interposer | I3C_1V2_19_SCL | true | PASS |  |
+| BMC_Interposer | I3C_1V2_19_SDA | true | PASS |  |
+| BMC_Interposer | INTRUSION_DETECT_L | true | PASS |  |
+
+

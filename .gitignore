@@ -10,7 +10,7 @@ venv/
 *.sqlite3
 *.jsonl
 *.db
-data/
+/data/          # 事件紀錄（根目錄）；services/*/data 的測試檔要進版控故不用 data/
 .DS_Store
 .env
 .claude
