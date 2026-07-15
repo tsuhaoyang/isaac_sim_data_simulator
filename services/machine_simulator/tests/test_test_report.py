@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from isaac_common.test_report import parse_report, report_stats
+from isaac_common.test_report import parse_report, path_to_tree, report_stats
 
 DATA = Path(__file__).resolve().parents[1] / "data"
 
@@ -27,3 +27,22 @@ def test_fail_path_parsed_after_colon_by_arrow():
 
 def test_pass_copy_has_no_fails():
     assert report_stats(DATA / "demo.md.pass.txt") == (265, 0)
+
+
+def test_path_tree_splits_board_at_first_dot():
+    t = path_to_tree(["SPB_PCIE_Riser2.J1.A13", "SPB_PCIE_Riser2.R5.1", "BMC_Interposer.J7.A33"])
+    assert t == [
+        {"board": "SPB_PCIE_Riser2", "nodes": ["J1.A13", "R5.1"]},   # 同板連續 -> 一段
+        {"board": "BMC_Interposer", "nodes": ["J7.A33"]},
+    ]
+
+
+def test_path_tree_keeps_revisited_board_as_separate_segments():
+    # GND 那條會「走過去又繞回 Riser Card」——必須是頭尾兩段獨立，不可合併
+    g = next(it for it in parse_report(DATA / "demo.md.err.txt") if it.item == "I2C_3V3_5_SCL")
+    assert [s["board"] for s in g.path_tree] == [
+        "Riser Card", "SPB_PCIE_Riser", "BMC_Interposer", "SPB_PCIE_Riser2", "Riser Card",
+    ]
+    assert g.path_tree[0]["nodes"] == ["J1003.A55", "J21.A17"]
+    assert g.path_tree[-1]["nodes"] == ["J22.B17", "J1004.B66"]
+    assert sum(len(s["nodes"]) for s in g.path_tree) == len(g.path) == 18   # 節點數守恆

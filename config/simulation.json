@@ -6,7 +6,7 @@
     "count": 1
   },
   "products": {
-    "total": 250000000000000,
+    "total": 25,
     "arrival_interval_s": 4.0,
     "arrival_jitter": "poisson"
   },
@@ -26,12 +26,12 @@
     "arm_move_time_s": 10.0,
     "arm_to_tray_time_s": 10.0,
     "per_machine": {
-      "Tray_00": { "load_s": 10.0, "unload_s": 10.0 },
-      "Tray_01": { "load_s": 10.0, "unload_s": 10.0 },
-      "Tray_02": { "load_s": 10.0, "unload_s": 10.0 },
-      "Tray_03": { "load_s": 10.0, "unload_s": 10.0 },
-      "Tray_04": { "load_s": 10.0, "unload_s": 10.0 },
-      "Tray_05": { "load_s": 10.0, "unload_s": 10.0 }
+      "Tray_00": { "load_s": 13.0, "unload_s": 13.0 },
+      "Tray_01": { "load_s": 14.0, "unload_s": 14.0 },
+      "Tray_02": { "load_s": 18.0, "unload_s": 18.0 },
+      "Tray_03": { "load_s": 20.0, "unload_s": 20.0 },
+      "Tray_04": { "load_s": 14.0, "unload_s": 14.0 },
+      "Tray_05": { "load_s": 13.0, "unload_s": 13.0 }
     }
   },
   "error": {

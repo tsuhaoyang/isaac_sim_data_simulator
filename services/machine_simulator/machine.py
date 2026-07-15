@@ -108,7 +108,7 @@ class Machine:
             machine_id=self.id, product_id=self.product_id,
             index=index, total=len(self.cfg.test_rows),
             board=row.board, item=row.item, result=row.result,
-            fault=row.fault, path=list(row.path),
+            fault=row.fault, path=list(row.path), path_tree=list(row.path_tree),
         )
 
     def _begin_job(self, product_id: str, now: float, out: TickOutput) -> None:

@@ -84,7 +84,8 @@ def main() -> None:
                 ts=ev.ts, entity_type="test", entity_id=ev.machine_id, event=ev.result,
                 product_id=ev.product_id,
                 detail={"index": ev.index, "total": ev.total, "item": ev.item,
-                        "fault": ev.fault, "path": ev.path},
+                        "fault": ev.fault, "path": ev.path,
+                        "path_tree": [s.model_dump() for s in ev.path_tree]},
             ))
         if ev.result == "FAIL":
             log.info("%s test #%d/%d %s FAIL(%s) path[%d]", ev.machine_id, ev.index, ev.total,

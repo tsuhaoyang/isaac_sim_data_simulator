@@ -56,6 +56,12 @@ class ArmCommand(BaseModel):
 
 
 # --- per test-item event (測試機逐筆測項, SPEC §4) ---
+class PathSegment(BaseModel):
+    """FAIL 路徑的一段：同一板子連續經過的節點。板子重複經過會是獨立的一段（保序）。"""
+    board: str                                     # 例 "SPB_PCIE_Riser2"
+    nodes: list[str] = Field(default_factory=list)  # 例 ["J1.A13", "R5.1"]
+
+
 class MachineTestEvent(BaseModel):
     machine_id: str
     product_id: str | None = None
@@ -65,7 +71,8 @@ class MachineTestEvent(BaseModel):
     item: str                  # device / net 名稱
     result: str                # PASS | FAIL
     fault: str | None = None   # Power | GND | None
-    path: list[str] = Field(default_factory=list)  # FAIL 路徑（PASS 為空）
+    path: list[str] = Field(default_factory=list)          # FAIL 扁平路徑（PASS 為空）
+    path_tree: list[PathSegment] = Field(default_factory=list)  # 同一路徑的階層版（依板子分段、保序）
     ts: float = Field(default_factory=_now)
 
 

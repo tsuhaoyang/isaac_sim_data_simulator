@@ -21,7 +21,28 @@ class TestItem:
     item: str                 # device (J1/R1…) or net name
     result: str               # "PASS" | "FAIL"
     fault: str | None = None  # "Power" | "GND" | None (FAIL only)
-    path: list[str] = field(default_factory=list)  # parsed FAIL path (empty for PASS)
+    path: list[str] = field(default_factory=list)       # 扁平路徑（PASS 為空）
+    path_tree: list[dict] = field(default_factory=list)  # 階層路徑 [{board, nodes}]（見 path_to_tree）
+
+
+def path_to_tree(path: list[str]) -> list[dict]:
+    """把扁平 path 依序壓成 segment：以 '.' 的第一段（board）為父階層，其餘（component.pin）掛在底下。
+
+    節點格式為 `board.component.pin`，例：`SPB_PCIE_Riser2.J1.A13`
+        -> {"board": "SPB_PCIE_Riser2", "nodes": ["J1.A13", …]}
+
+    同一 board **連續**的節點歸一段；board 重複經過（非連續，如走過去又繞回來）會成為
+    **獨立的一段**，順序完整保留——不可用 dict grouping，否則往返語意會被合併掉。
+    """
+    segs: list[dict] = []
+    for node in path:
+        board, _, rest = node.partition(".")
+        rest = rest or node
+        if segs and segs[-1]["board"] == board:
+            segs[-1]["nodes"].append(rest)
+        else:
+            segs.append({"board": board, "nodes": [rest]})
+    return segs
 
 
 def _cells(line: str) -> list[str]:
@@ -61,7 +82,7 @@ def parse_report(path: str | Path) -> list[TestItem]:
             result = (c[3].upper() if len(c) > 3 else "PASS")
             if result == "FAIL":
                 fault, nodes = _parse_fail(c[4] if len(c) > 4 else "")
-                items.append(TestItem(board, name, "FAIL", fault, nodes))
+                items.append(TestItem(board, name, "FAIL", fault, nodes, path_to_tree(nodes)))
             else:
                 items.append(TestItem(board, name, "PASS"))
     return items

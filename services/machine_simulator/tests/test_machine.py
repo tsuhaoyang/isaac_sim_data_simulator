@@ -1,6 +1,6 @@
 from random import Random
 
-from isaac_common.test_report import TestItem
+from isaac_common.test_report import TestItem, path_to_tree
 
 from machine import Machine, MachineConfig
 
@@ -9,7 +9,8 @@ def rows(*specs):
     out = []
     for i, r in enumerate(specs, 1):
         if r == "FAIL":
-            out.append(TestItem("B", f"net{i}", "FAIL", "Power", ["A.1", "B.2", "C.3"]))
+            p = ["BoardX.J1.A1", "BoardX.R5.2", "BoardY.J7.B3"]
+            out.append(TestItem("B", f"net{i}", "FAIL", "Power", p, path_to_tree(p)))
         else:
             out.append(TestItem("B", f"net{i}", "PASS"))
     return out
@@ -49,9 +50,14 @@ def test_fail_adds_recovery_and_carries_path():
     assert {1, 2, 3} <= set(by_idx)
     # row2 是 FAIL → 進 error 復原 → 回 working，row3 應在 ~fail_recovery(3.0) 後才出現
     assert by_idx[3][0] - by_idx[2][0] >= 2.9
-    # FAIL 事件帶解析後 path + fault，PASS 不帶
-    assert by_idx[2][1].result == "FAIL" and by_idx[2][1].fault == "Power" and by_idx[2][1].path == ["A.1", "B.2", "C.3"]
-    assert by_idx[1][1].path == []
+    # FAIL 事件帶解析後 path + 階層 path_tree + fault，PASS 不帶
+    fail_ev = by_idx[2][1]
+    assert fail_ev.result == "FAIL" and fail_ev.fault == "Power"
+    assert fail_ev.path == ["BoardX.J1.A1", "BoardX.R5.2", "BoardY.J7.B3"]
+    assert [(s.board, s.nodes) for s in fail_ev.path_tree] == [
+        ("BoardX", ["J1.A1", "R5.2"]), ("BoardY", ["J7.B3"]),
+    ]
+    assert by_idx[1][1].path == [] and by_idx[1][1].path_tree == []
     # FAIL 有把 state 送 error，復原後回 working，最後仍 done（不中止整板）
     assert "error" in states
     assert states.index("error") < states.index("done")

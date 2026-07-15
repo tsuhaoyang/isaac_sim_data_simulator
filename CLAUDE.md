@@ -20,7 +20,7 @@
 - **Policy / Driver / Clock 分層**：`SchedulingPolicy` 純邏輯無 I/O；`LiveDriver`(RealClock+MQTT) 跑 demo、`SimDriver`(VirtualClock+內嵌模型) 跑容量驗證，**共用同一份 policy**。RNG 可注入種子。
 
 ## 機台狀態機（不可偏離）
-`empty → check_in(Tray收合) → working → check_out(Tray吐出) → done → empty`。每台 Tray 是**測試機**：`working` = 逐筆串流測項（來自 `test_data` 報告，每 `row_interval_s` 一筆），遇 FAIL → 進 `error` 停 `fail_recovery_s` → 回 `working` 續測（不中止、不報廢、verdict=FAIL），測項細節（含解析後 FAIL path）走 `plant/machine/{id}/test`、**不轉 Isaac**。scheduler 把工作中的 `error` 當「還在忙、復原中」不 scrap（policy._observe）。
+`empty → check_in(Tray收合) → working → check_out(Tray吐出) → done → empty`。每台 Tray 是**測試機**：`working` = 逐筆串流測項（來自 `test_data` 報告，每 `row_interval_s` 一筆），遇 FAIL → 進 `error` 停 `fail_recovery_s` → 回 `working` 續測（不中止、不報廢、verdict=FAIL），測項細節（含解析後 FAIL `path` 扁平版 + `path_tree` 階層版，以節點第一個 `.` 切 board 分段、板子重複經過保留為獨立段）走 `plant/machine/{id}/test`、**不轉 Isaac**。scheduler 把工作中的 `error` 當「還在忙、復原中」不 scrap（policy._observe）。
 
 ## 狀態紀錄表（SPEC §7）
 - **即時狀態總表**：MQTT retained 訊息 + collector 記憶體快照。
